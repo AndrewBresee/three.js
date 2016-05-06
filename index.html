@@ -32,21 +32,30 @@
 		var cube = new THREE.Mesh( geometry, material ); 
 		scene.add( cube );
 
-		var geometry2 = new THREE.BoxGeometry( 1.5, 1.5, 1.5 );
-		var material2 = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-		var cube2 = new THREE.Mesh( geometry2, material2 ); 
-		scene.add( cube2 );
-
 		camera.position.z = 5;
+
+
+		// the
+		var geometry = new THREE.PlaneGeometry( 5, 20, 32 );
+		var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+		var plane = new THREE.Mesh( geometry, material );
+		// plane.rotateX(10);
+		// plane.rotateZ(90);
+		plane.rotateY(90);
+		scene.add( plane );
 
 
 		// Anything you want to change has to be done in the is loop. 
 		// the requestAnimationFrame works better than setInterval because it will not run when the user is on a different screen
 		function render() {
 
+
+			// cube.position.copy(start_position);
+			// cube.quaternion.copy(quaternion)
+
 			requestAnimationFrame( render );
-			cube2.rotation.x -= 0.03;
-			cube.rotation.y += 0.03;
+			// cube.rotation.y += 0.03;
+			// cube.rotation.x += 0.01;
 			renderer.render( scene, camera );
 		}
 		render();
