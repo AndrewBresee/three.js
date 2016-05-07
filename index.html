@@ -13,6 +13,7 @@
 	<body>
 		<script src="js/three.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+		<script type='text/javascript' src='tween.js'></script>
 		<script>
 
 		var scene = new THREE.Scene();
@@ -43,29 +44,34 @@
 		camera.position.z = 5.0;
 
 		// movement 
-		var forward = 87; 
-		var left = 65;
-		var right = 68;
-		var back = 83;
+		var isMoveing = function(){
+			var forward = 87; 
+			var left = 65;
+			var right = 68;
+			var back = 83;
 
-		document.addEventListener("keydown", function (e) {
-			var keyPresed = e.keyCode;
-			console.log("e.keyCode: ", keyPresed);
-			if (keyPresed === right) {
-				camera.position.x += 0.5
-			} else if (keyPresed === left) {
-				camera.position.x -= 0.5
-			} else if (keyPresed === forward) {
-				camera.position.z += 1;
-			}
-		});
+			document.addEventListener("keydown", function (e) {
+				var keyPresed = e.keyCode;
+				console.log("e.keyCode: ", keyPresed);
 
-		document.addEventListener("keyup", function (e) {
-		   console.log("e.keyCode: ", e.keyCode);
-		});
+				if (keyPresed === right) {
+					camera.position.x += 0.005
+				} else if (keyPresed === left) {
+					camera.position.x -= 0.005
+				} else if (keyPresed === forward) {
+					camera.position.z -= 0.005;
+				}
+			});
+
+			document.addEventListener("keyup", function (e) {
+				console.log("e.keyCode: ", e.keyCode);
+			});
+		}
 
 
 		function render() {
+			
+			isMoveing();
 
 			requestAnimationFrame( render );
 			cube.rotation.y += 0.03;
