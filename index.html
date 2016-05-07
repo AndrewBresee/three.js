@@ -43,6 +43,7 @@
 			new THREE.BoxGeometry( 50, 0, 50 ),
 			new THREE.MeshBasicMaterial( { color: 0x008800 })
 		);
+
 		floor.position.y = -0.01;
 		floor.name = "floor";
 		scene.add( floor );
@@ -59,6 +60,8 @@
 			var left = 65;
 			var right = 68;
 			var back = 83;
+			var rotateLeft = 81;
+			var rotateRight = 69;
 
 			document.addEventListener("keydown", function (e) {
 				var keyPresed = e.keyCode;
@@ -72,7 +75,11 @@
 					camera.position.z -= 0.005;
 				} else if (keyPresed === back) {
 					camera.position.z += 0.005;
-				}
+				} else if (keyPresed === rotateLeft) {
+					camera.rotation.y += 0.0005*(90 * Math.PI / 180)
+				} else if (keyPresed === rotateRight) {
+					camera.rotation.y -= 0.0005*(90 * Math.PI / 180)
+				} 
 			});
 
 			document.addEventListener("keyup", function (e) {
