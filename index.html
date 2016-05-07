@@ -12,50 +12,64 @@
 	</head>
 	<body>
 		<script src="js/three.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 		<script>
 
-
 		var scene = new THREE.Scene();
-		// first number is the aspect ratio. 
-		// second number is the field of view. Almost always want to do width/height, or you get funky view angles 
-		// last two numbers have to do with when something is rendered 
 		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-		// If you want to render you app at a lower resolution, use setSize(window.innerWidth/2, window.innerHeight/2, false)
 		var renderer = new THREE.WebGLRenderer();
 		renderer.setSize( window.innerWidth, window.innerHeight );
-		document.body.appendChild( renderer.domElement )
+		document.body.appendChild( renderer.domElement );
 
-
-		var geometry = new THREE.BoxGeometry( 4, 1, 1 );
-		var material = new THREE.MeshBasicMaterial( { color: 0x00ffff } );
-		var cube = new THREE.Mesh( geometry, material ); 
+		// cube
+		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+		var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+		var cube = new THREE.Mesh( geometry, material );
 		scene.add( cube );
+		cube.translateY( 2 );
 
-		camera.position.z = 5;
 
-
-		// the
-		var geometry = new THREE.PlaneGeometry( 5, 20, 32 );
-		var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+		// plane
+		var geometry = new THREE.PlaneGeometry( 10, 20, 32 );
+		var material = new THREE.MeshBasicMaterial( {color: 0xf11f00, side: THREE.DoubleSide} );
 		var plane = new THREE.Mesh( geometry, material );
-		// plane.rotateX(10);
-		// plane.rotateZ(90);
-		plane.rotateY(90);
 		scene.add( plane );
+		plane.rotateX(90);
 
 
-		// Anything you want to change has to be done in the is loop. 
-		// the requestAnimationFrame works better than setInterval because it will not run when the user is on a different screen
+		// camera position at players height
+		camera.position.y = 1.8; 
+		camera.position.z = 5.0;
+
+		// movement 
+		var forward = 87; 
+		var left = 65;
+		var right = 68;
+		var back = 83;
+
+		document.addEventListener("keydown", function (e) {
+			var keyPresed = e.keyCode;
+			console.log("e.keyCode: ", keyPresed);
+			if (keyPresed === right) {
+				camera.position.x += 0.5
+			} else if (keyPresed === left) {
+				camera.position.x -= 0.5
+			} else if (keyPresed === forward) {
+				camera.position.z += 1;
+			}
+		});
+
+		document.addEventListener("keyup", function (e) {
+		   console.log("e.keyCode: ", e.keyCode);
+		});
+
+
 		function render() {
 
-
-			// cube.position.copy(start_position);
-			// cube.quaternion.copy(quaternion)
-
 			requestAnimationFrame( render );
-			// cube.rotation.y += 0.03;
-			// cube.rotation.x += 0.01;
+			cube.rotation.y += 0.03;
+			cube.rotation.x += 0.01;
 			renderer.render( scene, camera );
 		}
 		render();
