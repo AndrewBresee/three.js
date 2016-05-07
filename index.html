@@ -31,17 +31,27 @@
 		cube.translateY( 2 );
 
 
-		// plane
-		var geometry = new THREE.PlaneGeometry( 10, 20, 32 );
-		var material = new THREE.MeshBasicMaterial( {color: 0xf11f00, side: THREE.DoubleSide} );
-		var plane = new THREE.Mesh( geometry, material );
-		scene.add( plane );
-		plane.rotateX(90);
+	
+		// floor
+		// var loader = new THREE.TextureLoader();
+		// var floorTexture =  loader.load("Textures/wood1.jpg" )
+		// floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+		// floorTexture.repeat.set( 15, 15 );
+
+
+		var floor = new THREE.Mesh(
+			new THREE.BoxGeometry( 50, 0, 50 ),
+			new THREE.MeshBasicMaterial( { color: 0x008800 })
+		);
+		floor.position.y = -0.01;
+		floor.name = "floor";
+		scene.add( floor );
 
 
 		// camera position at players height
 		camera.position.y = 1.8; 
 		camera.position.z = 5.0;
+
 
 		// movement 
 		var isMoveing = function(){
@@ -60,6 +70,8 @@
 					camera.position.x -= 0.005
 				} else if (keyPresed === forward) {
 					camera.position.z -= 0.005;
+				} else if (keyPresed === back) {
+					camera.position.z += 0.005;
 				}
 			});
 
