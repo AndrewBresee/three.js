@@ -24,38 +24,34 @@
 		document.body.appendChild( renderer.domElement );
 
 		// cube
-		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-		var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+		var geometry = new THREE.BoxGeometry( 4, 4, 4 );
+		var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
 		var cube = new THREE.Mesh( geometry, material );
 		scene.add( cube );
-		cube.translateY( 2 );
+		cube.translateY( 5 );
 
 
 	
 		// floor
-		geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
-		geometry.rotateX( - Math.PI / 2 );
-		for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+		floor = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
+		floor.rotateX( - Math.PI / 2 );
 
-			var vertex = geometry.vertices[ i ];
-			vertex.x += Math.random() * 20 - 10;
-			vertex.y += Math.random() * 2;
-			vertex.z += Math.random() * 20 - 10;
+		var materials = []; 
+		materials.push( new THREE.MeshBasicMaterial( { color: 0xffffff }) );
+		materials.push( new THREE.MeshBasicMaterial( { color: 0x000000 }) );
 
-		}
-		for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
-
-			var face = geometry.faces[ i ];
-			face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-			face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-			face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-
-		}
+		// assign a material to each face (each face is 2 triangles)
+		var l = floor.faces.length / 2;
 		
-		material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } );
-		mesh = new THREE.Mesh( geometry, material );
-		scene.add( mesh );
+		for( var i = 0; i < l; i ++ ) {
+		    j = i * 2; // <-- Added this back so we can do every other 'face'
+		    floor.faces[ j ].materialIndex = ((i + Math.floor(i/8)) % 2); // The code here is changed, replacing all 'i's with 'j's. KEEP THE 8
+		    floor.faces[ j + 1 ].materialIndex = ((i + Math.floor(i/8)) % 2); // Add this line in, the material index should stay the same, we're just doing the other half of the same face
+		}
 
+
+		mesh = new THREE.Mesh( floor, new THREE.MeshFaceMaterial( materials ) );
+		scene.add( mesh );
 
 		// SKYBOX/FOG
 		var skyBoxGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
@@ -113,8 +109,8 @@
 			isMoveing();
 
 			requestAnimationFrame( render );
-			cube.rotation.y += 0.03;
-			cube.rotation.x += 0.01;
+			cube.rotation.y += 0.05;
+			cube.rotation.x += 0.05;
 			renderer.render( scene, camera );
 		}
 		render();
