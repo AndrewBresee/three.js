@@ -33,6 +33,7 @@
 
 		function main() {
 			initScene();
+			requestPointerLock();
 		}
 
 
@@ -49,6 +50,7 @@
 
 				var pointerlockchange = function ( event ) {
 
+					// check if the pointer has just been locked or unlocked.
 					if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
 
 						blocker.style.display = 'none';
@@ -66,9 +68,11 @@
 				}
 
 				var pointerlockerror = function ( event ) {
-
 					instructions.style.display = '';
+				}
 
+				var moveCallback = function( event ){
+					console.log("MOUST MOVED!")
 				}
 
 				// Hook pointer lock state change events
@@ -80,8 +84,11 @@
 				document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
 				document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
 
-				instructions.addEventListener( 'click', function ( event ) {
 
+				// Hook mouse move events
+				document.addEventListener("mousemove", moveCallback, false);
+
+				instructions.addEventListener( 'click', function ( event ) {
 					instructions.style.display = 'none';
 
 					// Ask the browser to lock the pointer
@@ -111,15 +118,10 @@
 					} else {
 
 						element.requestPointerLock();
-
 					}
-
 				}, false );
-
 			} else {
-
 				instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
-
 			}
 
 		} // end requestPointerLock
@@ -149,7 +151,6 @@
 		materials.push( new THREE.MeshBasicMaterial( { color: 0xffffff }) );
 		materials.push( new THREE.MeshBasicMaterial( { color: 0x000000 }) );
 
-		// assign a material to each face (each face is 2 triangles)
 		var l = floor.faces.length / 2;
 		
 		for( var i = 0; i < l; i ++ ) {
@@ -157,7 +158,6 @@
 		    floor.faces[ j ].materialIndex = ((i + Math.floor(i/8)) % 2); 
 		    floor.faces[ j + 1 ].materialIndex = ((i + Math.floor(i/8)) % 2); 
 		}
-
 
 		mesh = new THREE.Mesh( floor, new THREE.MeshFaceMaterial( materials ) );
 		scene.add( mesh );
