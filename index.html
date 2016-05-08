@@ -33,28 +33,40 @@
 
 	
 		// floor
-		// var loader = new THREE.TextureLoader();
-		// var floorTexture =  loader.load("Textures/wood1.jpg" )
-		// floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-		// floorTexture.repeat.set( 15, 15 );
+		geometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
+		geometry.rotateX( - Math.PI / 2 );
+
+		for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+
+			var vertex = geometry.vertices[ i ];
+			vertex.x += Math.random() * 20 - 10;
+			vertex.y += Math.random() * 2;
+			vertex.z += Math.random() * 20 - 10;
+
+		}
+
+		for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
+
+			var face = geometry.faces[ i ];
+			face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+			face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+			face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+
+		}
+
+		material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } );
+
+		mesh = new THREE.Mesh( geometry, material );
+		scene.add( mesh );
+		
 
 
-		var floor = new THREE.Mesh(
-			new THREE.BoxGeometry( 50, 0, 50 ),
-			new THREE.MeshBasicMaterial( { color: 0x008800 })
-		);
-
-		floor.position.y = -0.01;
-		floor.name = "floor";
-		scene.add( floor );
-
-
-		// camera position at players height
+		// camera position at players height 
 		camera.position.y = 1.8; 
 		camera.position.z = 5.0;
 
-
 		// movement 
+		var clock = new THREE.Clock();
 		var isMoveing = function(){
 			var forward = 87; 
 			var left = 65;
@@ -62,19 +74,24 @@
 			var back = 83;
 			var rotateLeft = 81;
 			var rotateRight = 69;
+			var delta = clock.getDelta(); // seconds.
+			var moveDistance = 1 * delta; // 200 pixels per second
+			var rotateAngle = Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
 
 			document.addEventListener("keydown", function (e) {
 				var keyPresed = e.keyCode;
 				console.log("e.keyCode: ", keyPresed);
 
 				if (keyPresed === right) {
-					camera.position.x += 0.005
+					camera.translateX( -moveDistance )
 				} else if (keyPresed === left) {
-					camera.position.x -= 0.005
+					camera.translateX(  moveDistance );
 				} else if (keyPresed === forward) {
-					camera.position.z -= 0.005;
+					console.log("forward!")
+					camera.translateZ( -moveDistance );
 				} else if (keyPresed === back) {
-					camera.position.z += 0.005;
+					console.log("back!")
+					camera.translateZ( moveDistance );
 				} else if (keyPresed === rotateLeft) {
 					camera.rotation.y += 0.0005*(90 * Math.PI / 180)
 				} else if (keyPresed === rotateRight) {
@@ -89,7 +106,7 @@
 
 
 		function render() {
-			
+
 			isMoveing();
 
 			requestAnimationFrame( render );
