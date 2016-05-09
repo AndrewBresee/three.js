@@ -210,6 +210,21 @@
 		// to make cubes where the user is located 
 		var makeStuff = function(){
 			console.log("IT IS MADE: ", velocity);
+			var xLocation = velocity.x;
+			var yLocation = velocity.y; 
+			var zLocation = velocity.z;
+
+			material = new THREE.MeshPhongMaterial( { specular: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } );
+
+			var mesh = new THREE.Mesh( geometry, material );
+			mesh.position.x = Math.floor( xLocation);
+			mesh.position.y = Math.floor( yLocation );
+			mesh.position.z = Math.floor( zLocation );
+			scene.add( mesh );
+
+			material.color.setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+
+			objects.push( mesh );
 		}
 
 		document.addEventListener( 'keydown', onKeyDown, false );
@@ -226,11 +241,11 @@
 		document.body.appendChild( renderer.domElement );
 
 		// cube
-		var geometry = new THREE.BoxGeometry( 4, 4, 4 );
+		var geometry = new THREE.BoxGeometry( 10, 10, 10 );
 		var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
 		cube = new THREE.Mesh( geometry, material );
-		scene.add( cube );
-		cube.translateY( 5 );
+		// scene.add( cube );
+		// cube.translateY( 5 );
 	
 		// floor
 		floor = new THREE.PlaneGeometry( 400, 200, 20, 20 );
