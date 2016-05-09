@@ -25,6 +25,7 @@
 		<script src="js/three.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 		<script type='text/javascript' src='js/PointerLockControls.js'></script>
+		<script src="SphericalCursor.js"> </script>
 		<script>
 
 		var cube; 
@@ -32,6 +33,7 @@
 		var scene, camera;
 		var raycaster;
 		var objects = [];
+		var cursor;
 
 
 		var blocker = document.getElementById( 'blocker' );
@@ -218,7 +220,7 @@
 			material = new THREE.MeshPhongMaterial( { specular: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } );
 
 			var mesh = new THREE.Mesh( geometry, material );
-			mesh.position.x = xLocation;
+			mesh.position.x = xLocation;	
 			mesh.position.y = yLocation;
 			mesh.position.z = zLocation;
 			scene.add( mesh );
@@ -274,11 +276,38 @@
 		scene.add(skyBox);
 		scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 
+
+		// cursor
+		cursor = new THREE.Mesh(
+			new THREE.SphereGeometry( 2 ),
+			new THREE.MeshPhongMaterial( { color: "#FFFFFF" } )
+		);
+		cursor.name = "cursor";
+		scene.add( cursor );
+
+		// So cursor appears on top
+		cursor.renderOrder = 10;
+		cursor.material.depthTest = false;
 	
 	}
 
 
 		function animate() {
+
+			var currentPosition = controls.getObject().position;
+			var xLocation = currentPosition.x;
+			var yLocation = currentPosition.y; 
+			var zLocation = currentPosition.z;
+
+			// console logs location of cursor 
+			var mouse = SphericalCursor.update();
+			var mouseX = mouse.x; 
+			var mouseY = mouse.y; 
+
+			console.log("cursor: ", cursor);
+
+			cursor.position.x = xLocation + mouseX;
+			cursor.position.y = yLocation + mouseY;
 
 			requestAnimationFrame( animate );
 
