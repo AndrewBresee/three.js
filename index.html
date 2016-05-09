@@ -294,20 +294,10 @@
 
 		function animate() {
 
-			var currentPosition = controls.getObject().position;
-			var xLocation = currentPosition.x;
-			var yLocation = currentPosition.y; 
-			var zLocation = currentPosition.z;
-
+	
 			// console logs location of cursor 
 			var mouse = SphericalCursor.update();
-			var mouseX = mouse.x; 
-			var mouseY = mouse.y; 
-
-			console.log("cursor: ", cursor);
-
-			cursor.position.x = xLocation + mouseX;
-			cursor.position.y = yLocation + mouseY;
+	
 
 			requestAnimationFrame( animate );
 

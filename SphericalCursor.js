@@ -11,19 +11,23 @@ var SphericalCursor = function() {
 
 	var movementX;
 	var movementY;
+	var movementZ;
 
 	window.addEventListener( "mousemove", onMouseMove );
 
 	function update() {
 
-		// TODO: Write this function.
-		return mouseLocation = {
-			'x': movementX,
-			'y': movementY
-		}
+		var currentPosition = controls.getObject().position;
+		var xLocation = currentPosition.x + movementX;
+		var yLocation = currentPosition.y; 
+		var zLocation = currentPosition.z;
 
-		// Put the cursor where you can see it, delete this.
-		cursor.position.y = 2.0;
+		cursor.position.x = xLocation;
+		cursor.position.y = yLocation;
+		cursor.position.z = zLocation + 10;
+
+		// TODO: Write this function.
+
 
 	}
 
