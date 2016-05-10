@@ -153,6 +153,8 @@
 		// camera.position.y = 1.8; 
 		// camera.position.z = 5.0;
 
+		// this passes in the current location of the camera to the pointerLockControlls, which then can be moved and changed depending on the mouse movements 
+
 		controls = new THREE.PointerLockControls( camera );
 		scene.add( controls.getObject() );
 
@@ -210,9 +212,21 @@
 
 
 		// to make cubes where the user is located 
+		// will change it to make boxs where the users pointer is
 		var makeStuff = function(){
+
+			// this works, why does it not work in animate()?
+			// var vector = new THREE.Vector3();
+			// vector.set(
+			//     ( event.clientX / window.innerWidth ) * 2 - 1,
+			//     - ( event.clientY / window.innerHeight ) * 2 + 1,
+			//     0.5 );
+
+			// vector.unproject( camera );
+
+
 			var currentPosition = controls.getObject().position;
-			console.log("IT IS MADE: ", currentPosition);
+
 			var xLocation = currentPosition.x;
 			var yLocation = currentPosition.y; 
 			var zLocation = currentPosition.z;
@@ -232,6 +246,8 @@
 
 		document.addEventListener( 'keydown', onKeyDown, false );
 		document.addEventListener( 'keyup', onKeyUp, false );
+
+		// Used to make boxes
 		document.addEventListener( 'click', makeStuff, false);
 
 		raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
@@ -247,8 +263,7 @@
 		var geometry = new THREE.BoxGeometry( 10, 10, 10 );
 		var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
 		cube = new THREE.Mesh( geometry, material );
-		// scene.add( cube );
-		// cube.translateY( 5 );
+
 	
 		// floor
 		floor = new THREE.PlaneGeometry( 400, 200, 20, 20 );
@@ -282,6 +297,7 @@
 			new THREE.SphereGeometry( 2 ),
 			new THREE.MeshPhongMaterial( { color: "#FFFFFF" } )
 		);
+
 		cursor.name = "cursor";
 		scene.add( cursor );
 
@@ -296,15 +312,15 @@
 
 	
 			// console logs location of cursor 
-			var mouse = SphericalCursor.update();
+			SphericalCursor.update();
 	
-
 			requestAnimationFrame( animate );
 
 			if ( controlsEnabled ) {
 				raycaster.ray.origin.copy( controls.getObject().position );
 				raycaster.ray.origin.y -= 10;
 
+				//Checks to see if user is interacting with a box
 				var intersections = raycaster.intersectObjects( objects );
 
 				var isOnObject = intersections.length > 0;

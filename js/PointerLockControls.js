@@ -2,6 +2,7 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
+// takes in camera as the argument, and changes it depending on direction
 THREE.PointerLockControls = function ( camera ) {
 
 	var scope = this;
@@ -17,18 +18,22 @@ THREE.PointerLockControls = function ( camera ) {
 
 	var PI_2 = Math.PI / 2;
 
+
 	var onMouseMove = function ( event ) {
+
 
 		if ( scope.enabled === false ) return;
 
 		var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
+		// controlls left right looking
 		yawObject.rotation.y -= movementX * 0.002;
+
+		// controlls up and down looking
 		pitchObject.rotation.x -= movementY * 0.002;
-
 		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
-
+		
 	};
 
 	this.dispose = function() {
