@@ -33,46 +33,54 @@ var SphericalCursor = function() {
 		var yLocation = currentPosition.y; 
 		var zLocation = currentPosition.z;
 
+
+		// this is the vector where the camera is looking
 		var pointerVector = camera.getWorldDirection();
-
-
-		// // http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
-		// vector = new THREE.Vector3();
-		// vector.set(
-		//     ( clientX / window.innerWidth ) * 2 - 1,
-		//     - ( clientY / window.innerHeight ) * 2 + 1,
-		//     -0.5 );
-
-		// vector.unproject( camera );
-
-		// dir = vector.sub( currentPosition ).normalize();
-		// distance = - zLocation / dir.z;
-		// pos = currentPosition.clone().add( dir.multiplyScalar( distance ) );
-
-		// console.log("vector: ", vector);
 
 
 		var vectorX = pointerVector.x;
 		var vectorY = pointerVector.y;
 		var vectorZ = pointerVector.z;
 
-		// make something that is relative to the player
-		// make a max distance and a min distance
-		// this will also correspond to the raycaster hit
+		// make a ray that extends out from the user to the max distance
+		// http://threejs.org/docs/#Reference/Math/Ray
+		// if the line intersects with anything, make the cursor at that location
+		// + a little 
+		// make the line invisable 
+
+		// the cursor will be at a fixed location close to the user
+		// unless there is an object a certain distance away
+		// if that object is within the max distance, then the cursor will go to that
+
 
 		cursor.position.x = xLocation + (vectorX * 50); 
 		cursor.position.y = yLocation + (vectorY * 50);
 		cursor.position.z = zLocation + (vectorZ * 50);
 
-		var minX = Math.min(xLocation + vectorX, MAX_DISTANCE); 
-		var minY = Math.min(yLocation + vectorY, MAX_DISTANCE);
-		var minZ = Math.min(zLocation + vectorZ, MAX_DISTANCE);
 
-		// cursor.position.x = Math.min(xLocation + vectorX, MAX_DISTANCE);
-		// cursor.position.y = Math.min(yLocation + vectorY, MAX_DISTANCE);
-		// cursor.position.z = zLocation + 10;
+		// http://threejs.org/docs/#Reference/Core/Raycaster.intersectObject
+		var raycaster = new THREE.Raycaster();
+		mouse = new THREE.Vector2();
+		raycaster.setFromCamera( mouse, camera );	
 
-		// TODO: Write this function.
+		//Checks to see if user is interacting with a box
+		var intersects = raycaster.intersectObjects( scene.children );
+
+		var maxItemDistance = 0; 
+		var minItemDistance = 100;  
+
+		if (intersects.length >= 1 ){
+			for (var i = 0; i < intersects.length; i++) {
+				if (intersects[i].distance < minItemDistance) {
+					minItemDistance = intersects[i];
+					minItemDistance
+				} else if (intersects[i].distance > maxItemDistance && intersects[i].distance < MAX_DISTANCE) {
+					maxItemDistance = intersects[i];
+				}
+			}
+			console.log("MAX THING AT: ", maxItemDistance);
+		}
+
 
 	}
 
@@ -80,6 +88,9 @@ var SphericalCursor = function() {
 
 		clientX = event.clientX;
 		clientY = event.clientY;
+
+		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
 
 		movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 		movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
