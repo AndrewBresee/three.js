@@ -25,14 +25,7 @@ var SphericalCursor = function() {
 
 	function update() {
 
-		vector = new THREE.Vector3();
-		vector.set(
-		    ( clientX / window.innerWidth ) * 2 - 1,
-		    - ( clientY / window.innerHeight ) * 2 + 1,
-		    0.5 );
-
-		vector.unproject( camera );
-
+	
 		// this will serve as the new "origin" for the cursor
 		// the cursor will then move around this point
 		var currentPosition = controls.getObject().position;
@@ -40,36 +33,44 @@ var SphericalCursor = function() {
 		var yLocation = currentPosition.y; 
 		var zLocation = currentPosition.z;
 
-		dir = vector.sub( currentPosition ).normalize();
-		distance = - zLocation / dir.z;
-		pos = currentPosition.clone().add( dir.multiplyScalar( distance ) );
+		var pointerVector = camera.getWorldDirection();
 
-		console.log("pos: ", pos);
 
-		// var vector = new THREE.Vector3();
-
+		// // http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
+		// vector = new THREE.Vector3();
 		// vector.set(
-		//     ( event.clientX / window.innerWidth ) * 2 - 1,
-		//     - ( event.clientY / window.innerHeight ) * 2 + 1,
-		//     0.5 );
+		//     ( clientX / window.innerWidth ) * 2 - 1,
+		//     - ( clientY / window.innerHeight ) * 2 + 1,
+		//     -0.5 );
 
 		// vector.unproject( camera );
 
-		// var dir = vector.sub( camera.position ).normalize();
+		// dir = vector.sub( currentPosition ).normalize();
+		// distance = - zLocation / dir.z;
+		// pos = currentPosition.clone().add( dir.multiplyScalar( distance ) );
 
-		// var distance = - camera.position.z / dir.z;
-
-		// var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+		// console.log("vector: ", vector);
 
 
+		var vectorX = pointerVector.x;
+		var vectorY = pointerVector.y;
+		var vectorZ = pointerVector.z;
 
-		var vectorX = vector.x;
-		var vectorY = vector.y;
-		var vectorZ = vector.z;
+		// make something that is relative to the player
+		// make a max distance and a min distance
+		// this will also correspond to the raycaster hit
 
-		cursor.position.x = pos.x;
-		cursor.position.y = pos.y;
-		cursor.position.z = pos.z - zLocation;
+		cursor.position.x = xLocation + (vectorX * 50); 
+		cursor.position.y = yLocation + (vectorY * 50);
+		cursor.position.z = zLocation + (vectorZ * 50);
+
+		var minX = Math.min(xLocation + vectorX, MAX_DISTANCE); 
+		var minY = Math.min(yLocation + vectorY, MAX_DISTANCE);
+		var minZ = Math.min(zLocation + vectorZ, MAX_DISTANCE);
+
+		// cursor.position.x = Math.min(xLocation + vectorX, MAX_DISTANCE);
+		// cursor.position.y = Math.min(yLocation + vectorY, MAX_DISTANCE);
+		// cursor.position.z = zLocation + 10;
 
 		// TODO: Write this function.
 
