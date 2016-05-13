@@ -20,11 +20,11 @@ var SphericalCursor = function() {
 	var clientX;
 	var clientY;
 
+	var targetItem; 
 
 	window.addEventListener( "mousemove", onMouseMove );
 
 	function update() {
-
 	
 		// this will serve as the new "origin" for the cursor
 		// the cursor will then move around this point
@@ -37,13 +37,11 @@ var SphericalCursor = function() {
 		// this is the vector where the camera is looking
 		var pointerVector = camera.getWorldDirection();
 
-
 		var vectorX = pointerVector.x;
 		var vectorY = pointerVector.y;
 		var vectorZ = pointerVector.z;
 
 		// make a ray that extends out from the user to the max distance
-		// http://threejs.org/docs/#Reference/Math/Ray
 		// if the line intersects with anything, make the cursor at that location
 		// + a little 
 		// make the line invisable 
@@ -62,47 +60,36 @@ var SphericalCursor = function() {
 		var intersects = raycaster.intersectObjects( objects );
 		var intersectsFloor = raycaster.intersectObjects( floorObject );
 
-		var maxItemDistance = 0; 
-		var minItemDistance = 100;  
+		targetItem = 0; 
+		var minItemDistance = 100;
 
-
-		// if (intersectsFloor.length >= 1 ) {
-		// 	var point = intersectsFloor[0].point;
-
-		// 	if (point.y === 0 && Math.abs(point.x) < MAX_DISTANCE && Math.abs(point.z) < MAX_DISTANCE) {
-		// 		console.log("touching floor at: ", point);
-		// 		cursor.position.x = point.x;
-		// 		cursor.position.y = point.y + 10;
-		// 		cursor.position.z = point.z;
-		// 	}
-
-		// }
 
 
 		if (intersects.length >= 1 ) {
-			for (var i = 0; i < intersects.length; i++) {
-				if (intersects[i].object.distance < minItemDistance) {
-					minItemDistance = intersects[i];
-				} else if (intersects[i].distance > maxItemDistance && intersects[i].distance < MAX_DISTANCE) {
+			if (intersects[0].distance > targetItem && intersects[0].distance < MAX_DISTANCE) {
 
-					maxItemDistance = intersects[i];
+					// code attempting to update color when mouse is over one cube face
+					// intersects[0].face.color.setRGB( 0.8 * Math.random() + 0.2, 0, 0 ); 
+					// // this allows the target cube color face to be updated
+					// intersects[0].object.geometry.colorsNeedUpdate = true;
 
-					var color = maxItemDistance.object.material.color;
-					var itemLocation = maxItemDistance.object.position;
-					var faceLocation = maxItemDistance.face.normal; 
+					targetItem = intersects[0];
+
+					var itemLocation = targetItem.object.position;
+
+					var faceLocation = targetItem.face.normal; 
 
 					var faceX = faceLocation.x; 
 					var faceY = faceLocation.y;
 					var faceZ = faceLocation.z;
 
-					// place the cursor on the cube face
-					// with slight difference for cube center
 					cursor.position.x = itemLocation.x;
 					cursor.position.y = itemLocation.y;
 					cursor.position.z = itemLocation.z;
 
-					console.log("Thing is at: ", maxItemDistance.face);
-
+					
+					// place the cursor on the cube face
+					// with slight difference for cube center
 					// targets the face of the cube
 					if (faceX !== 0 || faceX !== -0) {
 						if (faceX > 0) {
@@ -126,29 +113,37 @@ var SphericalCursor = function() {
 						}
 					}
 				} 
-			}
-
-
 		} else {
-			// also want to add the slight movement of the mouse
-			// so that it is not just in the direct center of the screen
+
+			// sets the cursor to be at a certain distance 
+			// if no cube is targed
 			cursor.position.x = xLocation + (vectorX * 50); 
 			cursor.position.y = yLocation + (vectorY * 50);
 			cursor.position.z = zLocation + (vectorZ * 50);
-
 		}
 
-		
 
+		
 		// check to see if max or min are objects 
 		// if minItemDistance is an object, then put the cursor there
-		// else if maxItemDistance is an object, put the cursor there
+		// else if targetItem is an object, put the cursor there
 		// otherwise, put the cursor at its fixed distance.  
 
+		// if the targetItem is an object
+		// change it back to its original color; 
 
 	}
 
 	function onMouseMove( event ) {
+
+		// // attempt to reset on color after cursor moves away
+		// if (typeof targetItem === 'object') {
+		// 	console.log("hit here")
+		// 	targetItem.face.color.setRGB( 1, 1, 1 );
+		// }
+
+		// For debugging, can remove it.
+		// console.log("movementX=" + movementX + ", movementY=" + movementY );
 
 		clientX = event.clientX;
 		clientY = event.clientY;
@@ -158,11 +153,6 @@ var SphericalCursor = function() {
 
 		movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 		movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-
-		// TODO: Write this function.
-
-		// For debugging, can remove it.
-		// console.log("movementX=" + movementX + ", movementY=" + movementY );
 
 	}
 

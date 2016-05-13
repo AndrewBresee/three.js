@@ -35,6 +35,7 @@
 		var objects = [];
 		var floorObject = []; 
 		var cursor;
+		var gameStarted = false; 
 
 
 		var blocker = document.getElementById( 'blocker' );
@@ -54,6 +55,9 @@
 
 					controlsEnabled = true;
 					controls.enabled = true;
+
+					// this prevents the user from making a box when they enable controls
+					gameStarted = true;
 
 					blocker.style.display = 'none';
 
@@ -214,36 +218,33 @@
 
 		// to make cubes where the user is located 
 		// will change it to make boxs where the users pointer is
-		var makeStuff = function(){
+		var makeStuff = function() {
+			// will not make a cube until after user starts 
+			if (gameStarted) {
+				var currentCursorPosition = cursor.position;
 
+				var xLocation = currentCursorPosition.x;
+				var yLocation = currentCursorPosition.y; 
+				var zLocation = currentCursorPosition.z;
 
-			var currentCursorPosition = cursor.position;
+				material = new THREE.MeshBasicMaterial( { color: 0x022ff0, vertexColors: THREE.FaceColors } );
 
-			var xLocation = currentCursorPosition.x;
-			var yLocation = currentCursorPosition.y; 
-			var zLocation = currentCursorPosition.z;
+				var mesh = new THREE.Mesh( geometry, material );
+				var wireframe = new THREE.WireframeHelper( mesh, 0x00ff00 );
 
-			// make an array of materials so the user can switch colors
-			// on mouse over
-			
+				mesh.position.x = xLocation;	
+				mesh.position.y = yLocation;
+				mesh.position.z = zLocation;
 
-			material = new THREE.MeshBasicMaterial( { color: 0x022ff0 } );
+				wireframe.position.x = xLocation;	
+				wireframe.position.y = yLocation;
+				wireframe.position.z = zLocation;
 
-			var mesh = new THREE.Mesh( geometry, material );
-			var wireframe = new THREE.WireframeHelper( mesh, 0x00ff00 );
+				scene.add( mesh );
+				scene.add( wireframe );
 
-			mesh.position.x = xLocation;	
-			mesh.position.y = yLocation;
-			mesh.position.z = zLocation;
-
-			wireframe.position.x = xLocation;	
-			wireframe.position.y = yLocation;
-			wireframe.position.z = zLocation;
-
-			scene.add( mesh );
-			scene.add( wireframe );
-
-			objects.push( mesh );
+				objects.push( mesh );
+			}
 		}
 
 		document.addEventListener( 'keydown', onKeyDown, false );
