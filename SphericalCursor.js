@@ -103,6 +103,10 @@ var SphericalCursor = function() {
 							cursor.position.z = itemLocation.z + faceZ - 9;	
 						}
 					}
+
+					// want to also add snapping to the floor
+					// so cubes can't be made under the plane
+
 				} 
 
 		} else {
