@@ -42,7 +42,6 @@
 		var instructions = document.getElementById( 'instructions' );
 
 		// http://www.html5rocks.com/en/tutorials/pointerlock/intro/
-
 		var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
 		if ( havePointerLock ) {
@@ -56,7 +55,8 @@
 					controlsEnabled = true;
 					controls.enabled = true;
 
-					// this prevents the user from making a box when they enable controls
+					// this prevents the user from making a box when 
+					// they first click to enable controls
 					gameStarted = true;
 
 					blocker.style.display = 'none';
@@ -149,17 +149,19 @@
 		var velocity = new THREE.Vector3();
 
 
-	//Initiize scene
-	function initScene(){
+	// Initiize scene
+	function initScene() {
 		scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 		
+		// I removed this because I was using camera height from other code
 		// camera position at players height 
 		// camera.position.y = 1.8; 
 		// camera.position.z = 5.0;
 
-		// this passes in the current location of the camera to the pointerLockControlls, which then can be moved and changed depending on the mouse movements 
-
+		// this passes in the current location of the camera 
+		// to the pointerLockControlls
+		// which then can be moved and changed depending on the mouse movements 
 		controls = new THREE.PointerLockControls( camera );
 		scene.add( controls.getObject() );
 
@@ -215,10 +217,10 @@
 
 		};
 
-
 		// to make cubes where the user is located 
 		// will change it to make boxs where the users pointer is
 		var makeStuff = function() {
+
 			// will not make a cube until after user starts 
 			if (gameStarted) {
 				var currentCursorPosition = cursor.position;
@@ -229,6 +231,7 @@
 
 				material = new THREE.MeshBasicMaterial( { color: 0x022ff0, vertexColors: THREE.FaceColors } );
 
+				var geometry = new THREE.BoxGeometry( 10, 10, 10 );
 				var mesh = new THREE.Mesh( geometry, material );
 				var wireframe = new THREE.WireframeHelper( mesh, 0x00ff00 );
 
@@ -255,21 +258,15 @@
 
 		raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
 
-
 		renderer = new THREE.WebGLRenderer();
 		renderer.setClearColor( 0xffffff );
 		renderer.setPixelRatio( window.devicePixelRatio );
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		document.body.appendChild( renderer.domElement );
-
-		// cube
-		var geometry = new THREE.BoxGeometry( 10, 10, 10 );
-		var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
-		cube = new THREE.Mesh( geometry, material );
-
 	
 		// floor
 		floor = new THREE.PlaneGeometry( 400, 200, 20, 20 );
+		// rotates the floor plane
 		floor.rotateX( - Math.PI / 2 );
 
 		var materials = []; 
@@ -288,13 +285,12 @@
 		floorObject.push( mesh );
 		scene.add( mesh );
 
-		// SKYBOX/FOG
+		// Skybox / fog
 		var skyBoxGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
 		var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9119ff, side: THREE.BackSide } );
 		var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
 		scene.add(skyBox);
 		scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
-
 
 		// cursor
 		cursor = new THREE.Mesh(
@@ -315,7 +311,6 @@
 
 		function animate() {
 
-	
 			// console logs location of cursor 
 			SphericalCursor.update( camera );
 	
