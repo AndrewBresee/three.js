@@ -33,6 +33,7 @@
 		var scene, camera;
 		var raycaster;
 		var objects = [];
+		var floorObject = []; 
 		var cursor;
 
 
@@ -222,15 +223,25 @@
 			var yLocation = currentCursorPosition.y; 
 			var zLocation = currentCursorPosition.z;
 
-			material = new THREE.MeshPhongMaterial( { specular: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } );
+			// make an array of materials so the user can switch colors
+			// on mouse over
+			
+
+			material = new THREE.MeshBasicMaterial( { color: 0x022ff0 } );
 
 			var mesh = new THREE.Mesh( geometry, material );
+			var wireframe = new THREE.WireframeHelper( mesh, 0x00ff00 );
+
 			mesh.position.x = xLocation;	
 			mesh.position.y = yLocation;
 			mesh.position.z = zLocation;
-			scene.add( mesh );
 
-			material.color.setHSL( Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+			wireframe.position.x = xLocation;	
+			wireframe.position.y = yLocation;
+			wireframe.position.z = zLocation;
+
+			scene.add( mesh );
+			scene.add( wireframe );
 
 			objects.push( mesh );
 		}
@@ -273,6 +284,7 @@
 		}
 
 		mesh = new THREE.Mesh( floor, new THREE.MeshFaceMaterial( materials ) );
+		floorObject.push( mesh );
 		scene.add( mesh );
 
 		// SKYBOX/FOG
@@ -285,8 +297,9 @@
 
 		// cursor
 		cursor = new THREE.Mesh(
-			new THREE.SphereGeometry( 2 ),
-			new THREE.MeshPhongMaterial( { color: "#FFFFFF" } )
+			new THREE.SphereGeometry( 1 ),
+			new THREE.MeshBasicMaterial( { color: "#F0FF00" })
+			// new THREE.MeshPhongMaterial( { color: "#0000FF" } )
 		);
 
 		cursor.name = "cursor";

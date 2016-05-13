@@ -53,33 +53,97 @@ var SphericalCursor = function() {
 		// if that object is within the max distance, then the cursor will go to that
 
 
-		cursor.position.x = xLocation + (vectorX * 50); 
-		cursor.position.y = yLocation + (vectorY * 50);
-		cursor.position.z = zLocation + (vectorZ * 50);
-
-
 		// http://threejs.org/docs/#Reference/Core/Raycaster.intersectObject
 		var raycaster = new THREE.Raycaster();
 		mouse = new THREE.Vector2();
 		raycaster.setFromCamera( mouse, camera );	
 
 		//Checks to see if user is interacting with a box
-		var intersects = raycaster.intersectObjects( scene.children );
+		var intersects = raycaster.intersectObjects( objects );
+		var intersectsFloor = raycaster.intersectObjects( floorObject );
 
 		var maxItemDistance = 0; 
 		var minItemDistance = 100;  
 
-		if (intersects.length >= 1 ){
+
+		// if (intersectsFloor.length >= 1 ) {
+		// 	var point = intersectsFloor[0].point;
+
+		// 	if (point.y === 0 && Math.abs(point.x) < MAX_DISTANCE && Math.abs(point.z) < MAX_DISTANCE) {
+		// 		console.log("touching floor at: ", point);
+		// 		cursor.position.x = point.x;
+		// 		cursor.position.y = point.y + 10;
+		// 		cursor.position.z = point.z;
+		// 	}
+
+		// }
+
+
+		if (intersects.length >= 1 ) {
 			for (var i = 0; i < intersects.length; i++) {
-				if (intersects[i].distance < minItemDistance) {
+				if (intersects[i].object.distance < minItemDistance) {
 					minItemDistance = intersects[i];
-					minItemDistance
 				} else if (intersects[i].distance > maxItemDistance && intersects[i].distance < MAX_DISTANCE) {
+
 					maxItemDistance = intersects[i];
-				}
+
+					var color = maxItemDistance.object.material.color;
+					var itemLocation = maxItemDistance.object.position;
+					var faceLocation = maxItemDistance.face.normal; 
+
+					var faceX = faceLocation.x; 
+					var faceY = faceLocation.y;
+					var faceZ = faceLocation.z;
+
+					// place the cursor on the cube face
+					// with slight difference for cube center
+					cursor.position.x = itemLocation.x;
+					cursor.position.y = itemLocation.y;
+					cursor.position.z = itemLocation.z;
+
+					console.log("Thing is at: ", maxItemDistance.face);
+
+					// targets the face of the cube
+					if (faceX !== 0 || faceX !== -0) {
+						if (faceX > 0) {
+							cursor.position.x = itemLocation.x + faceX + 9;	
+						} else {
+							cursor.position.x = itemLocation.x + faceX - 9;	
+						}
+					}
+					if (faceY !== 0 || faceY !== -0) {
+						if (faceY > 0) {
+							cursor.position.y = itemLocation.y + faceY + 9;
+						} else {
+							cursor.position.y = itemLocation.y + faceY - 9;	
+						}
+					}
+					if (faceZ !== 0 || faceZ !== -0) {
+						if (faceZ > 0) {
+							cursor.position.z = itemLocation.z + faceZ + 9;	
+						} else {
+							cursor.position.z = itemLocation.z + faceZ - 9;	
+						}
+					}
+				} 
 			}
-			console.log("MAX THING AT: ", maxItemDistance);
+
+
+		} else {
+			// also want to add the slight movement of the mouse
+			// so that it is not just in the direct center of the screen
+			cursor.position.x = xLocation + (vectorX * 50); 
+			cursor.position.y = yLocation + (vectorY * 50);
+			cursor.position.z = zLocation + (vectorZ * 50);
+
 		}
+
+		
+
+		// check to see if max or min are objects 
+		// if minItemDistance is an object, then put the cursor there
+		// else if maxItemDistance is an object, put the cursor there
+		// otherwise, put the cursor at its fixed distance.  
 
 
 	}
