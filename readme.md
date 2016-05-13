@@ -5,7 +5,7 @@ http://threejs.org/examples/misc_controls_pointerlock.html
 http://mrdoob.com/projects/voxels/#A/
 afhYhafhYhefhfYhcfhUhUheecYelkoSfSiShYhYhSfSfSfYfcfhYiUhYfeffjYi
 
-What I was attempting to create was a 3D block building/lego game. I was mostly successful given the time constraints, and will continue working on this project just for the fun of it.
+What I was attempting to create was a 3D block building/exploration game where the user can jump on the blocks. I was mostly successful given the time constraints, and will continue working on this project just for the fun of it.
 
 Known issues
 -At a far distance (beyond the max distance for the cursor), the cursor snaps to the edge of blocks instead of not snapping to anything at all
